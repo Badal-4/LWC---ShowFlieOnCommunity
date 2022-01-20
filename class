@@ -1,0 +1,33 @@
+public class FilesClass {
+    
+   
+@AuraEnabled(cacheable=true)
+    
+    public static List<ContentVersion> getRecords()
+    {
+       List<id> ids = new List<id>();
+       List<CustomObjectA__c> coList= new List<CustomObjectA__c>();
+       	List<Id> cdId = new List<Id>();
+       
+       coList = [Select Id from CustomObjectA__c];
+        for(CustomObjectA__c ca : coList)
+        {
+            ids.add(ca.Id);
+            System.debug(ids);
+        }
+        LIst<ContentDocumentLink> cdList = [Select Id, ContentDocumentId From ContentDocumentLink Where LinkedEntityId 	IN : ids];
+        for(ContentDocumentLink cdl : cdList)
+        {
+            cdId.add(cdl.ContentDocumentId);
+         //  url = '/sfc/servlet.shepherd/version/download/'+cdl.Id;
+           // System.debug(url);
+
+        }
+         
+     //  List<ContentVersion> cvList = [ SELECT Id, Title, ContentDocumentId,FileExtension FROM ContentVersion WHERE ContentDocumentId IN :cdId];
+        List<ContentVersion> cvList = [ SELECT Id FROM ContentVersion WHERE ContentDocumentId IN :cdId];
+        System.debug(cvList);
+        return cvList;
+      
+    }
+}
